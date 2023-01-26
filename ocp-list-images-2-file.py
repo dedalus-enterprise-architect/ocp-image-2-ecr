@@ -13,6 +13,7 @@ api_server = config.get("openshift", "api_server")
 bearer_token = config.get("openshift", "bearer_token")
 desired_registry = config.get("openshift", "registry")
 desired_registry_short = config.get("openshift", "registry_short")
+image_file = config.get("openshift", "image_file")
 
 # Connect to the OpenShift API server
 headers = {
@@ -95,7 +96,7 @@ images = seen
 
 # Save the image information to a JSON file
 json_to_file=json.dumps(images)
-with open("images.json", "w") as f:
+with open(image_file, "w") as f:
     f.write(json_to_file)
 
 
