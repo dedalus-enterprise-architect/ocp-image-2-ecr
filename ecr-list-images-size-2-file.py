@@ -10,7 +10,7 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 # Load parameters from config.ini
 config = configparser.ConfigParser()
 config.read(os.path.join(script_dir, 'config.ini'))
-in_file = config.get("ecr", "input_json_file")
+in_file = config.get("openshift", "image_file")
 out_file = config.get("ecr", "output_json_file")
 sum_file = config.get("ecr", "output_sum_file")
 aws_access_key_id = config.get('ecr', 'aws_access_key_id')
