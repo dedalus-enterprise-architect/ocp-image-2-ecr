@@ -16,7 +16,7 @@ sum_file = config.get("ecr", "output_sum_file")
 aws_access_key_id = config.get('ecr', 'aws_access_key_id')
 aws_secret_access_key = config.get('ecr', 'aws_secret_access_key')
 aws_session_token= config.get('ecr', 'aws_session_token')
-aws_region = config.get('ecr', 'region')
+aws_region = config.get('ecr', 'aws_region')
 
 # Create an ECR client
 ecr_client = boto3.client('ecr', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token, region_name=aws_region)
