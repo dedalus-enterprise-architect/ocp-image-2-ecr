@@ -56,4 +56,5 @@ with open(out_file, "w") as jsonf:
 
 #save the image total size to a text file
 with open(sum_file, "w") as textf:
-    textf.write(f"Total image size: {total_size_bytes} bytes ({total_size_gb:.2f} GB)")
+    textf.write(f"Total image size in bytes: {total_size_bytes}")
+    textf.write(f"Total image size in GB: {total_size_gb:.2f}")
