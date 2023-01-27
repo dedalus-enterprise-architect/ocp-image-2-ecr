@@ -6,7 +6,7 @@ import requests
 # Get the directory containing the script
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
-# Load OpenShift API server configuration from config.ini
+# Load parameters from config.ini
 config = configparser.ConfigParser()
 config.read(os.path.join(script_dir, 'config.ini'))
 api_server = config.get("openshift", "api_server")
@@ -33,19 +33,16 @@ if response.status_code == 200:
         try:
             # Get all pods in the project
             response = requests.get(f"{api_server}/api/v1/namespaces/{project['metadata']['name']}/pods", headers=headers, verify=False)
-            #print(response.content)
             if response.status_code == 200:
                 pods = json.loads(response.text)["items"]
             # Iterate through all pods
             for pod in pods:
                 # Get the container image information
                 container_image = pod["spec"]["containers"][0]["image"]
-                #print(container_image)
                 # Split the image information into registry, repository, and tag/digest
                 registry = container_image.split("/")[0]
                 #repository = "/".join(container_image.split("/")[1:-1])
                 repository = container_image.split("/", 1)[1].split(":")[0].split("@")[0]
-                #print(repository)
                 if "@" in container_image:
                     digest = container_image.split("@")[-1]
                     tag = ""
@@ -94,7 +91,7 @@ for i, image in enumerate(images):
 images = seen
 
 
-# Save the image information to a JSON file
+# Save the image list to a JSON file
 json_to_file=json.dumps(images)
 with open(image_file, "w") as f:
     f.write(json_to_file)

@@ -7,7 +7,7 @@ from botocore.exceptions import ClientError
 # Get the directory containing the script
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
-# Read the config.ini file
+# Load parameters from config.ini
 config = configparser.ConfigParser()
 config.read(os.path.join(script_dir, 'config.ini'))
 in_file = config.get("ecr", "input_json_file")
@@ -28,11 +28,9 @@ with open(in_file, 'r') as f:
 results = []
 # Iterate over the JSON blocks
 for block in data:
-    #print(block)
     try:
         # Pass the block to the `describe_images` method
         response = ecr_client.describe_images(**block)
-        #print(response)
         for item in response['imageDetails']:
             results.append({
                 'registryId': item['registryId'],
@@ -43,7 +41,6 @@ for block in data:
             })
         total_size_bytes = sum(single_image['imageSizeInBytes'] for single_image in results)
         total_size_gb = total_size_bytes / (1024 ** 3)
-        #results.append(response)
     except ClientError as e:
         if e.response['Error']['Code'] == 'RepositoryNotFoundException':
             print(f"Error: {block['repositoryName']} not found.")
