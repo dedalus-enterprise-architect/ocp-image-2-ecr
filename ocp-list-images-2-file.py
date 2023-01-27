@@ -37,47 +37,49 @@ if response.status_code == 200:
                 pods = json.loads(response.text)["items"]
             # Iterate through all pods
             for pod in pods:
-                # Get the container image information
-                container_image = pod["spec"]["containers"][0]["image"]
-                # Split the image information into registry, repository, and tag/digest
-                registry = container_image.split("/")[0]
-                #repository = "/".join(container_image.split("/")[1:-1])
-                repository = container_image.split("/", 1)[1].split(":")[0].split("@")[0]
-                if "@" in container_image:
-                    digest = container_image.split("@")[-1]
-                    tag = ""
-                else:
-                    tag = container_image.split(":")[-1]
-                    digest = ""
-                # Append the image information to the list
-                # Check if the registry matches the desired registry
-                if registry == desired_registry:
-                    if digest == "":
-                        images.append({
-                            "registryId": desired_registry_short,
-                            "repositoryName": repository,
-                            "imageIds": [
-                                {
-                                    "imageTag": tag
-                                }
-                            ],
-                            "filter": {
-                                "tagStatus": "ANY"
-                            }
-                        })
+                for container in pod["spec"]["containers"]:
+                    container_image = container["image"]
+                    # Get the container image information
+                    # container_image = pod["spec"]["containers"][0]["image"]
+                    # Split the image information into registry, repository, and tag/digest
+                    registry = container_image.split("/")[0]
+                    #repository = "/".join(container_image.split("/")[1:-1])
+                    repository = container_image.split("/", 1)[1].split(":")[0].split("@")[0]
+                    if "@" in container_image:
+                        digest = container_image.split("@")[-1]
+                        tag = ""
                     else:
-                        images.append({
-                            "registryId": desired_registry_short,
-                            "repositoryName": repository,
-                            "imageIds": [
-                                {
-                                    "imageDigest": digest
+                        tag = container_image.split(":")[-1]
+                        digest = ""
+                    # Append the image information to the list
+                    # Check if the registry matches the desired registry
+                    if registry == desired_registry:
+                        if digest == "":
+                            images.append({
+                                "registryId": desired_registry_short,
+                                "repositoryName": repository,
+                                "imageIds": [
+                                    {
+                                        "imageTag": tag
+                                    }
+                                ],
+                                "filter": {
+                                    "tagStatus": "ANY"
                                 }
-                            ],
-                            "filter": {
-                                "tagStatus": "ANY"
-                            }
-                        })
+                            })
+                        else:
+                            images.append({
+                                "registryId": desired_registry_short,
+                                "repositoryName": repository,
+                                "imageIds": [
+                                    {
+                                        "imageDigest": digest
+                                    }
+                                ],
+                                "filter": {
+                                    "tagStatus": "ANY"
+                                }
+                            })
         except Exception as e:
         # Handle the exception if the user does not have access to the project
           print(f"Error getting pods for project {project['metadata']['name']}: {e}")
